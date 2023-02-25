@@ -1,0 +1,108 @@
+import styled, { keyframes } from 'styled-components';
+
+const Title = styled.h1`
+  color: ${(props) => props.theme.textColor};
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => props.theme.backgroundColor};
+`;
+
+const Box = styled.div`
+  background-color: ${(props) => props.color};
+  width: 100px;
+  height: 100px;
+`;
+
+const Text = styled.span`
+  color: white;
+`;
+
+// inheritance
+const Circle = styled(Box)`
+  /* background-color: ${(props) => props.color};
+  width: 100px;
+  height: 100px; */
+  border-radius: 50px;
+`;
+
+const Button = styled.button`
+  background-color: orange;
+  width: 100px;
+  height: 100px;
+`;
+
+// 스타일드 컴포넌트 사용 시 속성을 정의할 수 있음
+const Input = styled.input.attrs({ required: true })`
+  background-color: tomato;
+`;
+
+// 스타일드 컴포넌트에서 애니메이션 주는 방식
+
+const rotation = keyframes`
+  0%{
+    transform:rotate(0deg);
+    border-radius:0px;
+  }
+  50%{
+    transform:rotate(360deg);
+    border-radius:100px;
+  }
+  100%{
+    transform:rotate(0deg);
+    border-radius:0px;
+  }
+`;
+
+const Emoji = styled.span`
+  font-size: 98px;
+`;
+
+const BBox = styled.div`
+  height: 200px;
+  width: 200px;
+  background-color: tomato;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: ${rotation} 1s linear infinite;
+  /* styledcomponent안의 태그를 선택할 수 있음 */
+  /* 태그에 as속성을 부여하여 html태그를 변환해도 동작함 */
+  ${Emoji}:hover {
+    font-size: 10px;
+  }
+`;
+
+function App() {
+  return (
+    <Wrapper as='header'>
+      <Title>SEX</Title>
+      <Box color='teal'>
+        <Text>Hello</Text>
+      </Box>
+      <Circle color='tomato' />
+      {/* styled coomponent의 태그를 바꾸고 싶을때 as property를 사용함 */}
+      <Button as='a' href='/' />
+      <div>
+        <Input />
+        <Input />
+        <Input />
+        <Input />
+        <Input />
+        <Input />
+      </div>
+      <BBox>
+        <Emoji as='div'>🙂</Emoji>
+      </BBox>
+      {/* BBox안의 이모지만 동작함 조건부 랜더링 가능 */}
+      <Emoji>🙂</Emoji>
+    </Wrapper>
+  );
+}
+
+export default App;
