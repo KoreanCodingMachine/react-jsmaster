@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-// components의 props
+// styled component에서 쓰기 위한 interface
 interface ContainerProps {
   bgColor: string;
   borderColor: string;
@@ -15,32 +15,22 @@ const Container = styled.div<ContainerProps>`
   border: 1px solid ${(props) => props.borderColor};
 `;
 
-// styled components의 props
+// props interface
 interface CircleProps {
   bgColor: string; // required
   borderColor?: string; // optional
-  text?: string;
+  text?: string; // optional
 }
 
-const Circle = ({
-  bgColor,
-  borderColor,
-  text = 'default text',
-}: CircleProps) => {
+const Circle = ({ bgColor, borderColor, text = 'im here' }: CircleProps) => {
+  const [value, setValue] = useState<string>('');
+
   return (
     <Container bgColor={bgColor} borderColor={borderColor ?? bgColor}>
       {text}
+      {value}
     </Container>
   );
 };
 
 export default Circle;
-
-interface PlayerShape {
-  name: string;
-  age: number;
-}
-
-const sayHello = (playerObj: PlayerShape) => `Hello ${playerObj.age}`;
-
-sayHello({ name: 'nico', age: 12 });
