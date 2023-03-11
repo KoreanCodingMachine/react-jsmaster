@@ -37,12 +37,16 @@ const Coin = () => {
   // const { coinId } = useParams() as unknown as RouteParams;
 
   const { coinId } = useParams() as unknown as RouteParams;
-  const { state } = useLocation() as unknown as RouteState;
-  const { name, loading } = state;
+
+  const {
+    state: { name },
+  } = useLocation() as unknown as RouteState;
+
   const [info, setInfo] = useState({});
+
   const [priceInfo, setPriceInfo] = useState({});
 
-  console.log(info, priceInfo);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     (async () => {
@@ -54,6 +58,7 @@ const Coin = () => {
       ).json();
       setInfo(infoData);
       setPriceInfo(priceData);
+      setLoading(false);
     })();
   }, []);
 
