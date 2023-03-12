@@ -7,6 +7,8 @@ import {
   useMatch,
 } from 'react-router-dom';
 import styled from 'styled-components';
+import { useQuery } from 'react-query';
+import { infoData, priceData } from '../api/api';
 import Price from './Price';
 import Chart from './Chart';
 
@@ -149,34 +151,47 @@ const Coin = () => {
     state: { name },
   } = useLocation() as unknown as RouteState;
 
-  const [info, setInfo] = useState<InfoData>();
+  // const [info, setInfo] = useState<InfoData>();
 
-  const [priceInfo, setPriceInfo] = useState<PriceData>();
+  // const [priceInfo, setPriceInfo] = useState<PriceData>();
 
-  const [loading, setLoading] = useState<boolean>(true);
+  // const [loading, setLoading] = useState<boolean>(true);
 
   const priceMatch = useMatch(`/:${coinId}/price`);
 
   const chartMatch = useMatch(`/:${coinId}/chart`);
 
-  useEffect(() => {
-    (async () => {
-      const infoData = await (
-        await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
-      ).json();
-      const priceData = await (
-        await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
-      ).json();
-      setInfo(infoData);
-      setPriceInfo(priceData);
-      setLoading(false);
-    })();
-  }, [coinId]); // coinId는 url에 존재하기 때문에 생명주기에 영향 x
+  // useEffect(() => {
+  //   (async () => {
+  //     const infoData = await (
+  //       await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
+  //     ).json();
+  //     const priceData = await (
+  //       await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
+  //     ).json();
+  //     setInfo(infoData);
+  //     setPriceInfo(priceData);
+  //     setLoading(false);
+  //   })();
+  // }, [coinId]); // coinId는 url에 존재하기 때문에 생명주기에 영향 x
+
+  // 타입을 정의해주는것이 아닌 사용할 이름을 정의해줌
+  const { isLoading: infoLoading, data: infoDatas } = useQuery(
+    ['infoData', coinId],
+    () => infoData(coinId!) // typeAssertion , undefined일때도 가능
+  );
+
+  const { isLoading: priceLoading, data: priceDatas } = useQuery(
+    ['priceData', coinId],
+    () => priceData(coinId!) // typeAssertion , undefined일때도 가능
+  );
+
+  const loading = infoLoading || priceLoading;
 
   return (
     <Container>
       <Header>
-        <Title>{name ? name : loading ? 'Loading...' : info?.name}</Title>
+        <Title>{name ? name : loading ? 'Loading...' : infoDatas?.name}</Title>
       </Header>
       {loading ? (
         <Loader>Loading...</Loader>
@@ -185,26 +200,26 @@ const Coin = () => {
           <Overview>
             <OverviewItem>
               <span>Rank:</span>
-              <span>{info?.rank}</span>
+              <span>{infoDatas?.rank}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Symbol:</span>
-              <span>${info?.symbol}</span>
+              <span>${infoDatas?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Open Source:</span>
-              <span>{info?.open_source ? 'Yes' : 'No'}</span>
+              <span>{infoDatas?.open_source ? 'Yes' : 'No'}</span>
             </OverviewItem>
           </Overview>
-          <Description>{info?.description}</Description>
+          <Description>{infoDatas?.description}</Description>
           <Overview>
             <OverviewItem>
               <span>Total Suply:</span>
-              <span>{priceInfo?.total_supply}</span>
+              <span>{priceDatas?.total_supply}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Max Supply:</span>
-              <span>{priceInfo?.max_supply}</span>
+              <span>{priceDatas?.max_supply}</span>
             </OverviewItem>
           </Overview>
           <Tabs>
