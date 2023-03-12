@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { getCoins } from '../api/api';
 import { useQuery } from 'react-query';
+import { Helmet } from 'react-helmet-async';
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -79,6 +80,9 @@ const Coins = () => {
 
   return (
     <Container>
+      <Helmet>
+        <title>코인</title>
+      </Helmet>
       <Header>
         <Title>코인</Title>
       </Header>

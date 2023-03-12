@@ -9,8 +9,7 @@ import {
 import styled from 'styled-components';
 import { useQuery } from 'react-query';
 import { infoData, priceData } from '../api/api';
-import Price from './Price';
-import Chart from './Chart';
+import { Helmet } from 'react-helmet-async';
 
 const Title = styled.h1`
   font-size: 48px;
@@ -176,12 +175,12 @@ const Coin = () => {
   // }, [coinId]); // coinId는 url에 존재하기 때문에 생명주기에 영향 x
 
   // 타입을 정의해주는것이 아닌 사용할 이름을 정의해줌
-  const { isLoading: infoLoading, data: infoDatas } = useQuery(
+  const { isLoading: infoLoading, data: infoDatas } = useQuery<InfoData>(
     ['infoData', coinId],
     () => infoData(coinId!) // typeAssertion , undefined일때도 가능
   );
 
-  const { isLoading: priceLoading, data: priceDatas } = useQuery(
+  const { isLoading: priceLoading, data: priceDatas } = useQuery<PriceData>(
     ['priceData', coinId],
     () => priceData(coinId!) // typeAssertion , undefined일때도 가능
   );
@@ -190,6 +189,9 @@ const Coin = () => {
 
   return (
     <Container>
+      <Helmet>
+        <title>{name ? name : loading ? 'Loading...' : infoDatas?.name}</title>
+      </Helmet>
       <Header>
         <Title>{name ? name : loading ? 'Loading...' : infoDatas?.name}</Title>
       </Header>
@@ -207,8 +209,8 @@ const Coin = () => {
               <span>${infoDatas?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
-              <span>Open Source:</span>
-              <span>{infoDatas?.open_source ? 'Yes' : 'No'}</span>
+              <span>Price:</span>
+              <span>${priceDatas?.quotes.USD.price.toFixed(3)}</span>
             </OverviewItem>
           </Overview>
           <Description>{infoDatas?.description}</Description>
@@ -234,7 +236,7 @@ const Coin = () => {
               </Link>
             </Tab>
           </Tabs>
-          <Outlet />
+          <Outlet context={{ coinId: coinId }} />
         </>
       )}
     </Container>
