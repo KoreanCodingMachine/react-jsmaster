@@ -33,6 +33,9 @@ const Chart = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>{coinId}</title>
+      </Helmet>
       {isLoading ? (
         'Loading chart...'
       ) : (
