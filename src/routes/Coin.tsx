@@ -177,12 +177,18 @@ const Coin = () => {
   // 타입을 정의해주는것이 아닌 사용할 이름을 정의해줌
   const { isLoading: infoLoading, data: infoDatas } = useQuery<InfoData>(
     ['infoData', coinId],
-    () => infoData(coinId!) // typeAssertion , undefined일때도 가능
+    () =>
+      coinId != null
+        ? infoData(coinId)
+        : Promise.reject(new Error('must need coinId'))
   );
 
   const { isLoading: priceLoading, data: priceDatas } = useQuery<PriceData>(
     ['priceData', coinId],
-    () => priceData(coinId!) // typeAssertion , undefined일때도 가능
+    () =>
+      coinId != null
+        ? priceData(coinId)
+        : Promise.reject(new Error('must need coinId'))
   );
 
   const loading = infoLoading || priceLoading;
